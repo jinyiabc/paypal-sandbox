@@ -3,13 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "ng": "ng",
-    "start": "nodemon ./bin/www",
-    "build": "ng build --prod",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
-    "postinstall": "ng build"
+    "start": "nodemon ./bin/www"
   },
   "private": true,
   "dependencies": {
