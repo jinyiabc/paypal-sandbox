@@ -22,13 +22,98 @@
 
 </head>
 <body>
+    <div class="containter">
+
+    <div class="cart-list boxed-content narrow-margin">
+        <h1>SHOPPING CART</h1>
+        <table colspan="12" class="table">
+            <colgroup>
+                <col span="2" title="ITEMS" class="col-items">
+                <col span="4" title="DETAILS" class="col-details">
+                <col span="2" title="PRICE" class="col-price">
+                <col span="1" title="QUANTITY" class="col-qty">
+                <col span="3" title="TOTAL" class="col-total">
+            </colgroup>
+            <thead class="show-for-medium">
+                <tr><th class="cart-items" scope="col">ITEMS</th>
+                    <th class="cart-details" scope="col">DETAILS</th>
+                    <th class="cart-price" scope="col">PRICE</th>
+                    <th class="cart-qty" scope="col">QUANTITY</th>
+                    <th class="cart-total" scope="col">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="cart-items" scope="row">
+                        <img src="https://demo.paypal.com/demo/img/merchantimages/camera-lg.jpg" alt="CAMERA">
+                    </th>
+                    <td class="cart-details"><p>Lorem Ipsum proin gravida nibh vel velit auctor aliquet.Aenean sollicitudin, lorem.</p><p>ITEM #: 123456789</p></td>
+                    <td class="cart-price">$300.00</td><td class="cart-qty"><span>1</span></td>
+                    <td class="cart-total">$300.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <form id="ship_address">
+        <div class="form-group">
+          <label for="name">recipient_name</label>
+          <input type="text" class="form-control" id="recipient_name" autocomplete='recipient_name'
+                 name="recipient_name" value="Scruff McGruff">
+        </div>
+
+        <div class="form-group">
+          <label for="line1">line1</label>
+          <input type="text" class="form-control" id="line1" autocomplete='line1'
+                  name="line1" value="1234 Main St.">
+        </div>
+
+        <div class="form-group">
+          <label for="line2">line2</label>
+          <input type="text" class="form-control" id="line2" autocomplete='line1'
+                  name="line2" value="Unit 1">
+        </div>
+
+        <div class="form-group">
+          <label for="city">city</label>
+          <input type="text" class="form-control" id="city" autocomplete='city'
+                 name="city" value="Saratoga">
+        </div>
+
+        <div class="form-group">
+          <label for="country_code">country_code</label>
+          <input type="text" class="form-control" id="country_code" autocomplete='country_code'
+                 name="country_code" value="US">
+        </div>
+
+        <div class="form-group">
+          <label for="country_code">postal_code</label>
+          <input type="text" class="form-control" id="postal_code" autocomplete='postal-code'
+                 name="postal_code" value="95070">
+        </div>
+
+        <div class="form-group">
+          <label for="country_code">state</label>
+          <input type="text" class="form-control" id="state" autocomplete='state'
+                  name="state" value="CA">
+        </div>
+
+        <div class="form-group">
+          <label for="phone">phone</label>
+          <input type="text" class="form-control" id="phone" autocomplete='state'
+                  name="phone" value="123.456.7890">
+        </div>
+
+        <!-- <input type="submit" class="pp-checkout " value="Submit"> -->
+        <!-- <input type="submit" name="" value="confirm" > -->
+    </form>
+</div>
 
   <div id="checkout-message"></div>
   <div id="paypal-button"></div>
   <script>
   // Create a client.
   braintree.client.create({
-  authorization: 'sandbox_q4nkc2k5_w5tbt5qrnt297c5p' //CLIENT_AUTHORIZATION
+  authorization: 'sandbox_q4nkc2k5_w5tbt5qrnt297c5p' //tokenization_key
   }, function (clientErr, clientInstance) {
 
   // Stop if there was a problem creating the client.
@@ -57,30 +142,45 @@
     env: 'sandbox', // or 'sandbox'
 
     payment: function () {
-      return paypalCheckoutInstance.createPayment(
-          {
-        flow: 'checkout', // Required
-        amount: 10.00, // Required
-        currency: 'USD', // Required
-        enableShippingAddress: true,
-        shippingAddressEditable: false,
-        shippingAddressOverride: {
-          recipientName: 'Scruff McGruff',
-          line1: '1234 Main St.',
-          line2: 'Unit 1',
-          city: 'Chicago',
-          countryCode: 'US',
-          postalCode: '60652',
-          state: 'IL',
-          phone: '123.456.7890'
-        }
-      }
-  );
+        // console.log('click works!');
+        var recipientName = document.getElementById("recipient_name").value;
+        var line1 = document.getElementById("line1").value;
+        var line2 = document.getElementById("line2").value;
+        var city = document.getElementById("city").value;
+        var countryCode = document.getElementById("country_code").value;
+        var postalCode = document.getElementById("postal_code").value;
+        var state = document.getElementById("state").value;
+        var phone = document.getElementById("phone").value;
+
+          return paypalCheckoutInstance.createPayment(
+              {
+            flow: 'checkout', // Required
+            amount: 300.00, // Required
+            currency: 'USD', // Required
+            enableShippingAddress: true,
+            shippingAddressEditable: false,
+            shippingAddressOverride: {
+              recipientName: recipientName,
+              line1: line1,
+              line2: line2,
+              city: city,
+              countryCode: countryCode,
+              postalCode: postalCode,
+              state: state,
+              phone: phone
+            }
+          }
+        );
     },
 
     onAuthorize: function (data, actions) {
+        console.log('authorize data:',data);
       return paypalCheckoutInstance.tokenizePayment(data)
         .then(function (payload) {
+          // Remove paypal button
+            $('#paypal-button').html('');
+            $('#ship_address').hide();
+
           // Submit `payload.nonce` to your server.
           $.ajax({
             type: 'POST',
@@ -91,8 +191,8 @@
                 console.log(result.transaction);
               $('#checkout-message').html(
                   `
-                  <h1>Success</h1>
-                  <p>Your transaction id is <strong>${result.transaction.id}</strong><br>
+                  <h1>Trade Success!</h1>
+                  <p>Your transaction ID is <strong>${result.transaction.id}</strong><br>
                   Check your <a href="https://sandbox.braintreegateway.com/login">sandbox Control Panel</a> for your test transactions.
                   </p>
               `);
