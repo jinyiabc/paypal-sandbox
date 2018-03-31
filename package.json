@@ -1,6 +1,6 @@
 {
   "name": "paypal-sandbox",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "start": "nodemon ./bin/www"
@@ -10,7 +10,6 @@
     "body-parser": "~1.18.2",
     "bootstrap": "^4.0.0",
     "braintree": "^2.8.0",
-    "connect-ensure-login": "^0.1.1",
     "cookie-parser": "~1.4.3",
     "core-js": "^2.4.1",
     "cors": "^2.8.4",
@@ -19,12 +18,8 @@
     "ejs": "~2.5.7",
     "express": "~4.15.5",
     "express-session": "^1.15.6",
-    "mongoose": "^5.0.6",
     "morgan": "~1.9.0",
     "nodemon": "^1.17.2",
-    "passport": "^0.4.0",
-    "passport-github": "^1.1.0",
-    "passport-local": "^1.0.0",
     "paypal-rest-sdk": "^1.8.1",
     "rxjs": "^5.5.6",
     "serve-favicon": "~2.4.5",
