@@ -41,13 +41,36 @@ app.post('/checkout', function(req, res, next) {
   });
 
   // Use the payment method nonce here
+  console.log(req.body);
+  // { paymentMethodNonce: '61af1b1a-c20f-0b98-5980-072ab23b15b9',
+  //   line1: '1234 Main St.',
+  //   line2: 'Unit 1',
+  //   city: 'Saratoga',
+  //   state: 'CA',
+  //   postalCode: '95070',
+  //   countryCode: 'US',
+  //   recipientName: 'Scruff McGruff' }
+
+  var fullName = req.body.recipientName.split(' ');
+  var firstName = fullName[0];
+  var lastName = fullName[1];
   var nonceFromTheClient = req.body.paymentMethodNonce;
-  console.log('Nounce from client:',nonceFromTheClient);
 
   // Create a new transaction for $10
   var newTransaction = gateway.transaction.sale({
     amount: '10.00',
     paymentMethodNonce: nonceFromTheClient, //'fake-valid-payroll-nonce',
+    shipping: {
+      firstName: firstName,
+      lastName: lastName,
+      company: "",
+      streetAddress: req.body.line1,
+      extendedAddress: req.body.line2,
+      locality: req.body.city,
+      region: req.body.state,
+      postalCode: req.body.postalCode,
+      countryCodeAlpha2: req.body.countryCode
+    },
     options: {
       // This option requests the funds from the transaction
       // once it has been authorized successfully

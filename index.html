@@ -181,11 +181,28 @@
             $('#paypal-button').html('');
             $('#ship_address').hide();
 
+            console.log(payload.details);
+            var shippingAddress = payload.details.shippingAddress;
+            var line1 = shippingAddress.line1;
+            var line2 = shippingAddress.line2;
+            var city = shippingAddress.city;
+            var state = shippingAddress.state;
+            var postalCode = shippingAddress.postalCode;
+            var countryCode = shippingAddress.countryCode;
+            var recipientName = shippingAddress.recipientName;
           // Submit `payload.nonce` to your server.
           $.ajax({
             type: 'POST',
             url: '/checkout',
-            data: {'paymentMethodNonce': payload.nonce}
+            data: {'paymentMethodNonce': payload.nonce,
+                    'line1': line1,
+                    'line2': line2,
+                    'city': city,
+                    'state': state,
+                    'postalCode': postalCode,
+                    'countryCode': countryCode,
+                    'recipientName': recipientName
+                        }
           }).done(function(result) {
             if (result.success) {
                 console.log(result.transaction);
